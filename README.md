@@ -46,10 +46,6 @@ The notebook writes each result to `docs/data/*.json` and also bundles them into
 
 **Split:** the dataset's own subject-disjoint split (train people 1, 3, 5, 6, 7, 8, 11, 14, 15, 16, 17, 19, 21, 22, 23, 25, 26, 27, 28, 29, 30; test people 2, 4, 9, 10, 12, 13, 18, 20, 24). **CV:** `GroupKFold(5)` by person on the training set only. **Seed:** 42.
 
-## Publishing on GitHub Pages
-
-Repository → Settings → Pages → *Deploy from a branch* → branch `main`, folder `/docs`.
-
 ## Data and licence
 
 UCI HAR Dataset, Anguita et al. (2013), distributed by the UCI Machine Learning Repository under CC BY 4.0. It is not committed to this repo; download it from the link above.
