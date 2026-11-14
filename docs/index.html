@@ -467,12 +467,21 @@
         <div class="sliders-grid" id="slidersGrid"></div>
 
         <div class="demo-output">
-          <div class="pred-result">
-            <span class="pred-label">Predicted:</span>
-            <span class="pred-value" id="predValue">—</span>
+          <div class="demo-output-grid">
+            <div class="figure-wrap">
+              <div id="figureStage" class="figure-stage"></div>
+              <p id="figureCaption" class="fig-caption"></p>
+            </div>
+            <div>
+              <div class="pred-result">
+                <span class="pred-label">Predicted:</span>
+                <span class="pred-value" id="predValue">—</span>
+              </div>
+              <div class="conf-bars" id="confBars"></div>
+            </div>
           </div>
-          <div class="conf-bars" id="confBars"></div>
-          <p class="card-sub" style="margin:0.9rem 0 0">Things to try: start from <em>Standing</em> and slowly raise
+          <p class="card-sub" style="margin:0.9rem 0 0">The figure acts out the model's top guess (drag it to
+            turn the view). It is an illustration of the prediction, not part of the model. Things to try: start from <em>Standing</em> and slowly raise
             <em>gravity Y</em>; the prediction flips to sitting. That is the same feature direction behind most real
             errors. Start from <em>Sitting</em> and push <em>gravity X</em> negative to make it laying.</p>
         </div>
@@ -528,6 +537,8 @@
             <li>L. Breiman. <em>Random Forests.</em> Machine Learning 45(1), 2001.</li>
             <li>C. Cortes, V. Vapnik. <em>Support-vector networks.</em> Machine Learning 20(3), 1995.</li>
           </ol>
+          <p class="card-sub" style="margin-top:0.8rem;margin-bottom:0"><strong>3D character:</strong> "Ch03" character and animations from
+            Adobe Mixamo, rendered with a small WebGL script written for this site.</p>
           <p class="card-sub" style="margin-top:1rem;margin-bottom:0"><strong>AI tools disclosure:</strong>
             Gemini / Google Antigravity helped draft the proposal and scaffold the first code and website. Claude
             (Anthropic) was used to review the project against the rubric, rewrite the evaluation (person-grouped CV,
@@ -580,6 +591,8 @@ jupyter nbconvert --to notebook --execute --inplace analysis.ipynb
   </footer>
 
   <script src="data/data.js"></script>
+  <script src="data/character.js"></script>
+  <script src="js/figure3d.js"></script>
   <script src="js/main.js"></script>
 </body>
 
