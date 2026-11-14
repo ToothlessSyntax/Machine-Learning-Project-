@@ -2,7 +2,7 @@
 
 Can a 2.56-second window of waist-worn phone accelerometer and gyroscope data tell which of six activities a **new, unseen person** is doing? We compare a majority-class baseline, logistic regression, random forest, an RBF-kernel SVM and k-NN on the UCI HAR dataset, using subject-grouped cross-validation for tuning and model selection and a held-out set of 9 people for the final test.
 
-**Website:** https://toothlesssyntax.github.io/har-es335/  *(update if the repo name differs)*
+**Website:** https://toothlesssyntax.github.io/Machine-Learning-Project-/
 
 ## Main result
 
@@ -29,8 +29,8 @@ requirements.txt
 ## Reproduce
 
 ```bash
-git clone https://github.com/ToothlessSyntax/har-es335.git
-cd har-es335
+git clone https://github.com/ToothlessSyntax/Machine-Learning-Project-.git
+cd Machine-Learning-Project-
 pip install -r requirements.txt
 
 # Download the dataset (https://archive.ics.uci.edu/dataset/240) and unzip it here,
