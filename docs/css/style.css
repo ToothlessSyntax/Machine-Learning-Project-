@@ -468,3 +468,47 @@ section[id], header[id] { scroll-margin-top: 60px; }
 }
 .styled-select { max-width: 100%; min-width: 0; }
 #windowSelect { width: min(100%, 460px); }
+
+/* ── Cartoon figure in the demo ── */
+.demo-output-grid { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 1.4rem; align-items: center; }
+.figure-stage { background: linear-gradient(#f8fafc, #eef2f7); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.figure-stage svg { display: block; width: 100%; height: auto; }
+.fig-caption { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 0.4rem; min-height: 1.2em; }
+.fig-limb { stroke: #334155; stroke-width: 9; stroke-linecap: round; fill: none; }
+.fig-limb.back { stroke: #94a3b8; }
+.fig-hand { fill: #334155; } .fig-hand.back { fill: #94a3b8; }
+.fig-torso { stroke-width: 16; stroke-linecap: round; transition: stroke 0.4s; }
+.fig-head { fill: #fff; stroke: #334155; stroke-width: 3; }
+.fig-face { stroke: #334155; stroke-width: 2; fill: none; stroke-linecap: round; }
+.fig-prop { opacity: 0; transition: opacity 0.45s; }
+.fig-prop.on { opacity: 1; }
+.fig-floor { stroke: #94a3b8; stroke-width: 2; }
+.fig-dash { stroke: #cbd5e1; stroke-width: 3; stroke-dasharray: 14 10; }
+.fig-stairs { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 2; stroke-linejoin: round; }
+.fig-furn { fill: #cbd5e1; stroke: #64748b; stroke-width: 2; stroke-linejoin: round; }
+.fig-pillow { fill: #fff; stroke: #94a3b8; stroke-width: 2; }
+.fig-bubble ellipse, .fig-bubble circle { fill: #fff; stroke: #94a3b8; stroke-width: 1.5; }
+.fig-bubble text { font: 600 11px Inter, sans-serif; fill: #334155; text-anchor: middle; }
+.fig-zzz { font: 700 14px Inter, sans-serif; fill: #64748b; }
+.fig-zzz tspan { animation: zfloat 2.4s ease-in-out infinite; }
+.fig-zzz tspan:nth-child(2) { animation-delay: 0.4s; } .fig-zzz tspan:nth-child(3) { animation-delay: 0.8s; }
+@keyframes zfloat { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+@media (max-width: 760px) { .demo-output-grid { grid-template-columns: 1fr; } .figure-wrap { max-width: 360px; margin: 0 auto; width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .fig-zzz tspan { animation: none; opacity: 0.8; } }
+
+/* ── 3D figure ── */
+.figure-stage.fig3d { position: relative; }
+.fig3d-canvas { display: block; width: 100%; aspect-ratio: 1 / 0.74; cursor: grab; touch-action: pan-y; }
+.fig3d-canvas:active { cursor: grabbing; }
+.fig3d-overlay { position: absolute; inset: 0; pointer-events: none; }
+.fig3d-bubble { position: absolute; top: 8%; right: 5%; background: #fff; border: 1.5px solid #94a3b8; border-radius: 50%;
+  padding: 0.55rem 0.9rem; display: flex; flex-direction: column; align-items: center; font: 600 0.72rem Inter, sans-serif; color: #334155; line-height: 1.25; }
+.fig3d-bubble::after { content: ""; position: absolute; left: 8%; bottom: -14px; width: 9px; height: 9px; border-radius: 50%; background: #fff; border: 1.5px solid #94a3b8; }
+.fig3d-bubble[hidden], .fig3d-zzz[hidden] { display: none; }
+.fig3d-zzz { position: absolute; transform: translate(-10%, -100%); font: 700 0.95rem Inter, sans-serif; color: #64748b; white-space: nowrap; }
+.fig3d-zzz span { display: inline-block; animation: zfloat 2.4s ease-in-out infinite; margin-right: 2px; }
+.fig3d-zzz span:nth-child(2) { animation-delay: 0.4s; transform: translateY(-6px); } .fig3d-zzz span:nth-child(3) { animation-delay: 0.8s; transform: translateY(-12px); }
+.fig3d-hint { position: absolute; left: 8px; bottom: 6px; font: 500 0.66rem Inter, sans-serif; color: #94a3b8; transition: opacity 0.4s; }
+.fig3d-hint.gone { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .fig3d-zzz span { animation: none; } }
+.fig3d-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 500 0.8rem Inter, sans-serif; color: #94a3b8; }
