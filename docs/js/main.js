@@ -289,6 +289,7 @@ const DEMO_LABELS = {
 const sid = f => "sl_" + f.replace(/[^a-z0-9]/gi, "_");
 function initDemo(dm) {
   DM = dm;
+  initFigure();
   $("demoF1").textContent = f3(dm.test_f1);
   $("slidersGrid").innerHTML = dm.features.map((f, i) => `
     <div class="slider-item">
@@ -320,12 +321,158 @@ function loadWindow(i) {
     8-feature demo model says <strong>${NICE[demoPred]}</strong> ${ok(demoPred, w.true)} · full 561-feature model says <strong>${NICE[w.full_model_pred]}</strong> ${ok(w.full_model_pred, w.true)}.
     Now move a slider to see what would change the answer.`;
 }
+/* ── Cartoon figure that acts out the demo model's top prediction (illustration only) ── */
+const LEN = { T: 50, HEAD: 13, UA: 27, LA: 25, TH: 36, SH: 36 };
+const FIG = { pred: "STANDING", conf: 1, second: null, cur: null, el: {}, t0: 0, last: 0, changedAt: 0,
+              running: false, visible: true,
+              reduce: !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) };
+
+function stairsPath(dir) {           // dir = +1: going up to the right, -1: going down to the right
+  const w = 28, h = 16, x0 = -56, n = (150 - x0) / w;
+  let d = `M ${x0} ${190 + dir * n * h}`;
+  for (let x = x0; x < 360; x += w) d += ` h ${w} v ${-dir * h}`;
+  return d + ` L 400 300 L ${x0} 300 Z`;
+}
+function limbSVG(id, l1, l2, back, isLeg) {
+  const c = `fig-limb${back ? " back" : ""}`;
+  const end = isLeg ? `<line x1="0" y1="${l2}" x2="8" y2="${l2}" class="${c}"/>`
+                    : `<circle cx="0" cy="${l2}" r="4.5" class="fig-hand${back ? " back" : ""}"/>`;
+  return `<g id="${id}"><line x1="0" y1="0" x2="0" y2="${l1}" class="${c}"/>
+    <g id="${id}2"><line x1="0" y1="0" x2="0" y2="${l2}" class="${c}"/>${end}</g></g>`;
+}
+function initFigure() {
+  const stage = $("figureStage");
+  if (!stage) return;
+  // Prefer the 3D stick-man model; fall back to the 2D drawing if WebGL or the model is unavailable
+  if (window.HARFigure3D && HARFigure3D.available()) {
+    try { FIG.three = HARFigure3D.create(stage); } catch (e) { console.warn("3D figure unavailable:", e); FIG.three = null; }
+    if (FIG.three) return;
+  }
+  const headY = -LEN.T - LEN.HEAD - 2;
+  stage.innerHTML = `
+  <svg viewBox="0 0 300 220" id="figSvg" role="img" aria-label="Cartoon figure acting out the prediction">
+    <line id="propFloor" class="fig-prop fig-floor on" x1="0" y1="190" x2="300" y2="190"/>
+    <line id="propWalk" class="fig-prop fig-dash" x1="0" y1="198" x2="300" y2="198"/>
+    <g id="propUp" class="fig-prop"><path id="stairsUp" class="fig-stairs" d="${stairsPath(1)}"/></g>
+    <g id="propDown" class="fig-prop"><path id="stairsDown" class="fig-stairs" d="${stairsPath(-1)}"/></g>
+    <g id="propChair" class="fig-prop">
+      <rect class="fig-furn" x="98" y="100" width="7" height="60" rx="3"/>
+      <rect class="fig-furn" x="98" y="154" width="50" height="7" rx="3"/>
+      <rect class="fig-furn" x="101" y="161" width="5" height="29"/><rect class="fig-furn" x="140" y="161" width="5" height="29"/>
+    </g>
+    <g id="propBed" class="fig-prop">
+      <rect class="fig-furn" x="74" y="174" width="200" height="11" rx="4"/>
+      <rect class="fig-furn" x="78" y="185" width="6" height="5"/><rect class="fig-furn" x="264" y="185" width="6" height="5"/>
+      <ellipse class="fig-pillow" cx="112" cy="171" rx="22" ry="6"/>
+    </g>
+    <g id="figRoot">
+      ${limbSVG("legB", LEN.TH, LEN.SH, true, true)}
+      <g id="armBwrap" transform="translate(0,${-LEN.T + 4})">${limbSVG("armB", LEN.UA, LEN.LA, true, false)}</g>
+      <line id="figTorso" class="fig-torso" x1="0" y1="0" x2="0" y2="${-LEN.T}"/>
+      ${limbSVG("legF", LEN.TH, LEN.SH, false, true)}
+      <g id="figHead" transform="translate(0,${headY})">
+        <circle class="fig-head" r="${LEN.HEAD}"/>
+        <circle cx="5" cy="-3" r="1.8" fill="#334155"/>
+        <path class="fig-face" d="M 2 5 Q 6 8 10 4"/>
+      </g>
+      <g id="armFwrap" transform="translate(0,${-LEN.T + 4})">${limbSVG("armF", LEN.UA, LEN.LA, false, false)}</g>
+    </g>
+    <text id="propZzz" class="fig-prop fig-zzz" x="122" y="138"><tspan>z</tspan><tspan dx="3" dy="-7">z</tspan><tspan dx="3" dy="-7">z</tspan></text>
+    <g id="figBubble" class="fig-prop fig-bubble">
+      <circle cx="196" cy="70" r="3"/><circle cx="205" cy="60" r="4.5"/>
+      <ellipse cx="238" cy="36" rx="58" ry="22"/>
+      <text id="bubbleText1" x="238" y="33">?</text><text id="bubbleText2" x="238" y="47"></text>
+    </g>
+  </svg>`;
+  for (const id of ["figRoot", "legF", "legF2", "legB", "legB2", "armF", "armF2", "armB", "armB2", "figTorso", "figHead",
+    "propFloor", "propWalk", "propUp", "propDown", "propChair", "propBed", "propZzz", "figBubble", "stairsUp", "stairsDown",
+    "bubbleText1", "bubbleText2", "figSvg"]) FIG.el[id] = document.getElementById(id);
+  FIG.el.legF2.setAttribute("transform", `translate(0,${LEN.TH})`);
+  FIG.t0 = FIG.last = FIG.changedAt = performance.now();
+  new IntersectionObserver(es => { FIG.visible = es[0].isIntersecting; if (FIG.visible) startFigure(); }).observe(stage);
+  startFigure();
+}
+// Joint angles in degrees. Legs/arms hang down at 0; negative swings them forward (figure faces right).
+function figTarget(act, t) {
+  const br = Math.sin(t * 2.2);
+  if (act === "WALKING") {
+    const p = t * 2 * Math.PI * 1.4, s = Math.sin(p), c = Math.cos(p);
+    return { hx: 150, hy: 113 + 5 * Math.abs(s), root: 5, lt: -28 * s, ls: 8 + 34 * Math.max(0, c), bt: 28 * s, bs: 8 + 34 * Math.max(0, -c),
+             la1: 24 * s, la2: -28, ba1: -24 * s, ba2: -28 };
+  }
+  if (act === "WALKING_UPSTAIRS") {
+    const p = t * 2 * Math.PI * 1.0, s = Math.sin(p), c = Math.cos(p);
+    return { hx: 150, hy: 112 + 3 * Math.abs(s), root: 12, lt: -28 - 26 * s, ls: 18 + 50 * Math.max(0, c), bt: -28 + 26 * s, bs: 18 + 50 * Math.max(0, -c),
+             la1: 20 * s, la2: -40, ba1: -20 * s, ba2: -40 };
+  }
+  if (act === "WALKING_DOWNSTAIRS") {
+    const p = t * 2 * Math.PI * 1.2, s = Math.sin(p), c = Math.cos(p);
+    return { hx: 150, hy: 115 + 3 * Math.abs(s), root: -6, lt: -14 - 22 * s, ls: 10 + 30 * Math.max(0, c), bt: -14 + 22 * s, bs: 10 + 30 * Math.max(0, -c),
+             la1: 14 * s - 8, la2: -20, ba1: -14 * s - 8, ba2: -20 };
+  }
+  if (act === "SITTING")
+    return { hx: 128, hy: 151 + 0.5 * br, root: -4, lt: -88, ls: 88, bt: -92, bs: 92, la1: -12, la2: -55, ba1: -8, ba2: -60 };
+  if (act === "LAYING")
+    return { hx: 178, hy: 167 + 0.6 * br, root: -90, lt: 0, ls: 0, bt: 3, bs: 0, la1: 4, la2: 0, ba1: -4, ba2: 0 };
+  return { hx: 150, hy: 116 + 0.5 * br, root: 0, lt: -3, ls: 3, bt: 4, bs: 3, la1: -5 + 1.5 * br, la2: -10, ba1: 6, ba2: -10 };  // STANDING
+}
+function startFigure() {
+  if (FIG.running || !FIG.el.figRoot) return;
+  FIG.running = true; FIG.last = performance.now();
+  requestAnimationFrame(figLoop);
+}
+function figLoop(now) {
+  if (!FIG.visible) { FIG.running = false; return; }
+  const dt = Math.min(0.05, (now - FIG.last) / 1000); FIG.last = now;
+  const t = FIG.reduce ? 0 : (now - FIG.t0) / 1000;
+  const tgt = figTarget(FIG.pred, t);
+  if (!FIG.cur) FIG.cur = { ...tgt };
+  const k = 1 - Math.exp(-dt * (now - FIG.changedAt < 800 ? 6 : 30));
+  for (const key in tgt) FIG.cur[key] += (tgt[key] - FIG.cur[key]) * k;
+  const P = FIG.cur, E = FIG.el;
+  E.figRoot.setAttribute("transform", `translate(${P.hx.toFixed(1)},${P.hy.toFixed(1)}) rotate(${P.root.toFixed(1)})`);
+  E.legF.setAttribute("transform", `rotate(${P.lt.toFixed(1)})`); E.legF2.setAttribute("transform", `translate(0,${LEN.TH}) rotate(${P.ls.toFixed(1)})`);
+  E.legB.setAttribute("transform", `rotate(${P.bt.toFixed(1)})`); E.legB2.setAttribute("transform", `translate(0,${LEN.TH}) rotate(${P.bs.toFixed(1)})`);
+  E.armF.setAttribute("transform", `rotate(${P.la1.toFixed(1)})`); E.armF2.setAttribute("transform", `translate(0,${LEN.UA}) rotate(${P.la2.toFixed(1)})`);
+  E.armB.setAttribute("transform", `rotate(${P.ba1.toFixed(1)})`); E.armB2.setAttribute("transform", `translate(0,${LEN.UA}) rotate(${P.ba2.toFixed(1)})`);
+  // moving scenery
+  const up = (t * 2.0) % 1, down = (t * 2.4) % 1;
+  E.stairsUp.setAttribute("transform", `translate(${(-28 * up).toFixed(1)},${(16 * up).toFixed(1)})`);
+  E.stairsDown.setAttribute("transform", `translate(${(-28 * down).toFixed(1)},${(-16 * down).toFixed(1)})`);
+  E.propWalk.style.strokeDashoffset = ((t * 70) % 24).toFixed(1);
+  requestAnimationFrame(figLoop);
+}
+function setFigure(pred, conf, second) {
+  const unsure3 = conf < 0.6;
+  const caption = unsure3 ? `Unsure: ${NICE[pred]} ${(conf * 100).toFixed(0)}% vs ${NICE[second]}`
+                          : `Acting out: ${NICE[pred]} (${(conf * 100).toFixed(0)}% sure)`;
+  if (FIG.three) { FIG.three.set(pred, conf, second, COLOR[pred], NICE); $("figureCaption").textContent = caption; return; }
+  if (!FIG.el.figRoot) return;
+  if (pred !== FIG.pred) FIG.changedAt = performance.now();
+  FIG.pred = pred; FIG.conf = conf;
+  const E = FIG.el, on = (el, v) => el.classList.toggle("on", v);
+  on(E.propFloor, !pred.startsWith("WALKING_")); on(E.propWalk, pred === "WALKING");
+  on(E.propUp, pred === "WALKING_UPSTAIRS"); on(E.propDown, pred === "WALKING_DOWNSTAIRS");
+  on(E.propChair, pred === "SITTING"); on(E.propBed, pred === "LAYING"); on(E.propZzz, pred === "LAYING");
+  E.figTorso.style.stroke = COLOR[pred];
+  const unsure = conf < 0.6;
+  on(E.figBubble, unsure);
+  E.bubbleText1.textContent = unsure ? `${NICE[pred]}?` : "";
+  E.bubbleText2.textContent = unsure ? `or ${NICE[second]}?` : "";
+  E.figSvg.setAttribute("aria-label", `Cartoon figure acting out the prediction: ${NICE[pred]}`);
+  $("figureCaption").textContent = unsure
+    ? `Unsure: ${NICE[pred]} ${(conf * 100).toFixed(0)}% vs ${NICE[second]}`
+    : `Acting out: ${NICE[pred]} (${(conf * 100).toFixed(0)}% sure)`;
+  startFigure();
+}
+
 function predict() {
   const x = DM.features.map((f, i) => { const v = +$(sid(f)).value; $("v_" + sid(f)).textContent = v.toFixed(2); return (v - DM.mean[i]) / DM.scale[i]; });
   const logits = DM.coef.map((w, k) => w.reduce((s, wj, j) => s + wj * x[j], DM.intercept[k]));
   const mx = Math.max(...logits), ex = logits.map(l => Math.exp(l - mx)), sum = ex.reduce((a, b) => a + b, 0);
   const probs = DM.classes.map((c, k) => [c, ex[k] / sum]).sort((a, b) => b[1] - a[1]);
   $("predValue").textContent = NICE[probs[0][0]];
+  setFigure(probs[0][0], probs[0][1], probs[1][0]);
   $("predValue").style.color = COLOR[probs[0][0]];
   $("confBars").innerHTML = probs.map(([c, p]) => `
     <div class="conf-bar-row"><div class="conf-bar-label">${NICE[c]}</div>
