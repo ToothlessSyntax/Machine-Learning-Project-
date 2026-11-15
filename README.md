@@ -57,8 +57,8 @@ UCI HAR Dataset, Anguita et al. (2013), distributed by the UCI Machine Learning 
 
 ## AI tools disclosure
 
-- **Gemini / Google Antigravity:** proposal drafting, initial code structure and the first version of the website.
-- **Claude (Anthropic):** reviewing the project against the rubric; rewriting the evaluation (subject-grouped CV, grid search, test-set bootstrap), the error analysis and the demo model; rebuilding the website text and interactions; editing.
+- **Gemini:** drafting initial code structure and a base version of the website.
+- **Claude:** reviewing the project; the error analysis; making the demo 3d model; rebuilding the website interactions; editing.
 
 We checked the outputs against the notebook, re-ran the full analysis, and are responsible for every result.
 
