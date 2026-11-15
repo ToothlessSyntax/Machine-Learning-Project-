@@ -1,4 +1,5 @@
-# Versions the results were produced with (Python 3.13). Nearby versions should give the same numbers.
+# Versions the results were produced with (Python 3.13). Needs Python 3.11+ (pandas 3 does not support 3.10).
+# Nearby versions should give the same numbers.
 scikit-learn==1.9.1
 pandas==3.0.5
 numpy==2.5.3
