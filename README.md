@@ -20,9 +20,10 @@ Logistic regression was selected by CV before the test set was used. The SVM's s
 
 ```
 analysis.ipynb      full analysis: data checks, grouped CV tuning, test evaluation, error analysis, exports
-results/            figures and the model comparison table written by the notebook
+results/            figures, the model comparison table and the full grid-search results, written by the notebook
 docs/               the website (served by GitHub Pages from /docs)
   data/             JSON files written by the notebook; the site reads only these
+                    (character.js is a prebuilt 3D-figure asset, see "Third-party assets")
 requirements.txt
 ```
 
@@ -31,7 +32,7 @@ requirements.txt
 ```bash
 git clone https://github.com/ToothlessSyntax/Machine-Learning-Project-.git
 cd Machine-Learning-Project-
-pip install -r requirements.txt
+pip install -r requirements.txt          # Python 3.11+ (results were produced with 3.13)
 
 # Download the dataset (https://archive.ics.uci.edu/dataset/240) and unzip it here,
 # so that "UCI HAR Dataset/" sits next to analysis.ipynb. Both the plain and the
@@ -50,9 +51,22 @@ The notebook writes each result to `docs/data/*.json` and also bundles them into
 
 UCI HAR Dataset, Anguita et al. (2013), distributed by the UCI Machine Learning Repository under CC BY 4.0. It is not committed to this repo; download it from the link above.
 
+## Third-party assets
+
+`docs/data/character.js` holds the 3D figure used in the website demo: the "Ch03" character and animations from [Adobe Mixamo](https://www.mixamo.com), packed into a JavaScript file for the site's small WebGL renderer (`docs/js/figure3d.js`). It is a prebuilt asset and is not produced by `analysis.ipynb`. The figure only illustrates the demo model's prediction; it plays no part in any result.
+
 ## AI tools disclosure
 
 - **Gemini / Google Antigravity:** proposal drafting, initial code structure and the first version of the website.
 - **Claude (Anthropic):** reviewing the project against the rubric; rewriting the evaluation (subject-grouped CV, grid search, test-set bootstrap), the error analysis and the demo model; rebuilding the website text and interactions; editing.
 
 We checked the outputs against the notebook, re-ran the full analysis, and are responsible for every result.
+
+## References
+
+1. J. Reyes-Ortiz, D. Anguita, A. Ghio, L. Oneto, X. Parra. *Human Activity Recognition Using Smartphones* [Dataset]. UCI Machine Learning Repository, 2013. https://doi.org/10.24432/C54S4K (CC BY 4.0)
+2. D. Anguita, A. Ghio, L. Oneto, X. Parra, J. L. Reyes-Ortiz. A Public Domain Dataset for Human Activity Recognition Using Smartphones. *ESANN*, 2013.
+3. F. Pedregosa et al. Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research* 12, 2825–2830, 2011.
+4. L. Breiman. Random Forests. *Machine Learning* 45(1), 5–32, 2001.
+5. C. Cortes, V. Vapnik. Support-vector networks. *Machine Learning* 20(3), 273–297, 1995.
+6. 3D character and animations: "Ch03", Adobe Mixamo, https://www.mixamo.com
