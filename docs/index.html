@@ -331,10 +331,11 @@
           people were used for training, and with only 9 people its edges are themselves rough. It is not a formal
           significance test.
         </div>
-        <p class="card-sub" style="margin-top:0.8rem;margin-bottom:0">Train scores near 1.0 against CV ≈ 0.92–0.93 show every model fits the
+        <p class="card-sub" style="margin-top:0.8rem;margin-bottom:0">Train scores near 1.0 against CV ≈ 0.87–0.93 show every model fits the
           training people much better than new people. The gap is mostly about <em>person-to-person variation</em>:
-          the stronger-regularisation settings in each grid did not score better in CV. (k-NN with distance weighting scores 1.0 on train by
-          construction.)</p>
+          the stronger-regularisation settings in each grid did not score better in CV (the score of every setting and
+          fold is in <a href="https://github.com/ToothlessSyntax/Machine-Learning-Project-/blob/main/results/grid_search_results.csv"><code>results/grid_search_results.csv</code></a>).
+          (k-NN with distance weighting scores 1.0 on train by construction.)</p>
       </div>
 
       <div class="card" style="margin-top:1.5rem;">
@@ -564,7 +565,7 @@
 git clone https://github.com/ToothlessSyntax/Machine-Learning-Project-.git
 cd Machine-Learning-Project-
 
-# 2. Install dependencies (Python 3.10+)
+# 2. Install dependencies (Python 3.11+; results were produced with 3.13)
 pip install -r requirements.txt
 
 # 3. Download the data from https://archive.ics.uci.edu/dataset/240
@@ -572,7 +573,8 @@ pip install -r requirements.txt
 
 # 4. Run the whole notebook (about 6-7 minutes; grid search dominates)
 jupyter nbconvert --to notebook --execute --inplace analysis.ipynb
-#    -> writes figures to results/ and the website data to docs/data/
+#    -> writes figures and tables (incl. grid_search_results.csv) to results/
+#       and the website data to docs/data/
 
 # 5. View the website: open docs/index.html in a browser</code></pre>
         </div>
