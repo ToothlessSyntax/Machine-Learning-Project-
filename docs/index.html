@@ -332,9 +332,11 @@
           significance test.
         </div>
         <p class="card-sub" style="margin-top:0.8rem;margin-bottom:0">Train scores near 1.0 against CV ≈ 0.87–0.93 show every model fits the
-          training people much better than new people. The gap is mostly about <em>person-to-person variation</em>:
-          the stronger-regularisation settings in each grid did not score better in CV (the score of every setting and
-          fold is in <a href="https://github.com/ToothlessSyntax/Machine-Learning-Project-/blob/main/results/grid_search_results.csv"><code>results/grid_search_results.csv</code></a>).
+          training people much better than new people. The gap looks like <em>person-to-person variation</em> rather than a
+          tuning problem: changing a model's settings moves its CV score by about 0.02 at most, while changing which
+          people are held out moves it by 0.08–0.13, and the same fold (people 14, 15, 19, 25) is the hardest for every
+          model. The score of every setting and fold is in
+          <a href="https://github.com/ToothlessSyntax/Machine-Learning-Project-/blob/main/results/grid_search_results.csv"><code>results/grid_search_results.csv</code></a>.
           (k-NN with distance weighting scores 1.0 on train by construction.)</p>
       </div>
 
@@ -565,7 +567,7 @@
 git clone https://github.com/ToothlessSyntax/Machine-Learning-Project-.git
 cd Machine-Learning-Project-
 
-# 2. Install dependencies (Python 3.11+; results were produced with 3.13)
+# 2. Install dependencies (Python 3.11+; tested with 3.13 and 3.14, identical results)
 pip install -r requirements.txt
 
 # 3. Download the data from https://archive.ics.uci.edu/dataset/240
