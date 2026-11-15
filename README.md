@@ -32,7 +32,7 @@ requirements.txt
 ```bash
 git clone https://github.com/ToothlessSyntax/Machine-Learning-Project-.git
 cd Machine-Learning-Project-
-pip install -r requirements.txt          # Python 3.11+ (results were produced with 3.13)
+pip install -r requirements.txt          # Python 3.11+ (tested with 3.13 and 3.14, identical results)
 
 # Download the dataset (https://archive.ics.uci.edu/dataset/240) and unzip it here,
 # so that "UCI HAR Dataset/" sits next to analysis.ipynb. Both the plain and the
