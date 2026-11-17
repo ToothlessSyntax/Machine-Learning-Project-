@@ -108,7 +108,7 @@ function renderLeak(rows) {
 }
 
 /* ── Results table ── */
-function renderResults(rows) {
+function renderResults(rows, dm) {
   const sel = rows.find(r => r.Selected);
   $("resultsTableBody").innerHTML = rows.map(r => `
     <tr class="${r.Selected ? "best-row" : ""}">
@@ -122,7 +122,7 @@ function renderResults(rows) {
       <td>${f3(r["Train Macro-F1"])}</td>
     </tr>`).join("");
   $("heroResult").innerHTML = `Selected model: <strong>${esc(sel.Model)}</strong> · test macro-F1 <strong>${f3(sel["Test Macro-F1"])}</strong>
-    on 9 unseen people (95% interval ${f3(sel["CI low"])}–${f3(sel["CI high"])}) · baseline ${f3(rows[0]["Test Macro-F1"])}`;
+    on 9 unseen people (95% interval ${f3(sel["CI low"])}–${f3(sel["CI high"])}) · majority baseline ${f3(rows[0]["Test Macro-F1"])}${dm ? ` · simple 8-feature baseline ${f3(dm.test_f1)}` : ""}`;
 }
 
 /* ── Confusion matrix explorer ── */
@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const [cls, pca, cmp, cm, fi, ps, leak, err, dm] = await Promise.all([
       "class_distribution.json", "pca_clusters.json", "model_comparison.json", "confusion_matrices.json",
       "feature_importance.json", "per_subject.json", "cv_leakage.json", "error_analysis.json", "demo_model.json"].map(loadJSON));
-    renderClassDist(cls); renderPCA(pca); renderLeak(leak); renderResults(cmp);
+    renderClassDist(cls); renderPCA(pca); renderLeak(leak); renderResults(cmp, dm);
     initCM(cm, cmp.find(r => r.Selected).Model); initFI(fi);
     renderErrorPairs(err); renderSubjects(ps); initHist(err); initDemo(dm);
   } catch (e) {
